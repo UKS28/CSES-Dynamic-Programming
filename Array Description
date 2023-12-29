@@ -1,0 +1,66 @@
+#include <bits/stdc++.h>
+using namespace std;
+#define rep(k,z) for(int i=k;i<z;i++)
+#define ll  long long int
+int MOD=1e9+7;
+
+// https://www.youtube.com/watch?v=PLpzng35N54
+
+int main()
+{
+    ll n,m;
+    cin>>n>>m;
+    vector<ll> v(n);
+    rep(0,n)
+    cin>>v[i];
+    vector<vector<ll>> dp(n,vector<ll>(m+1,0));
+    
+    // dp[i][j]---> number of desired array with ith index as j.  
+
+    
+    if(v[0]!=0)
+    {
+       dp[0][v[0]]=1;
+    } 
+
+    else
+    {
+
+        for(int i=1;i<=m;i++)
+            dp[0][i]=1;
+    }
+    
+    for(int i=1;i<n;i++)
+    {
+      if(v[i]==0)
+      {
+         for(int j=1;j<=m;j++)
+         {
+            if(j-1>0)
+             (dp[i][j]+=dp[i-1][j-1])%=MOD;
+            (dp[i][j]+=dp[i-1][j])%=MOD; 
+            if(j+1<=m)
+            (dp[i][j]+=dp[i-1][j+1])%=MOD;
+         }
+      }  
+      else
+      {
+        if(v[i]-1>0)
+          (dp[i][v[i]]+=dp[i-1][v[i]-1])%=MOD;
+         (dp[i][v[i]]+=dp[i-1][v[i]])%=MOD;
+        if(v[i]+1<=m)
+        (dp[i][v[i]]+=dp[i-1][v[i]+1])%=MOD;  
+      } 
+    }
+    ll sum=0;
+    if(v[n-1]==0)
+    for(int i=1;i<=m;i++)
+       (sum+=dp[n-1][i])%=MOD;
+    else
+    sum+=dp[n-1][v[n-1]];
+
+    cout<<sum<<endl;
+
+}
+
+
