@@ -1,0 +1,62 @@
+#include <bits/stdc++.h>
+using namespace std;
+#define rep(k,z) for(int i=k;i<z;i++)
+#define ll  long long int
+const ll MOD=1e9+7;
+
+bool cmp(pair<pair<ll,ll>,ll> &a,pair<pair<ll,ll>,ll> &b)
+{
+    return a.first.second<b.first.second;
+}
+
+// end value less than key
+int findIdx(vector<pair<pair<ll,ll>,ll>> &vp,ll key)
+{
+    int l=0,h=vp.size()-1;
+    int ans=-1;
+    while(l<=h)
+    {
+       int  mid=l+(h-l)/2;
+       if(vp[mid].first.second<key)
+       {
+        ans=mid;
+        l=mid+1;
+       }
+       else
+       h=mid-1;
+    }
+
+    return ans+1;
+}
+
+int main()
+{
+    ll n;
+    cin>>n;
+    // {{start,end},val}
+    vector<pair<pair<ll,ll>,ll>> vp(n);
+
+
+    for(int i=0;i<n;i++)
+    {
+        cin>>vp[i].first.first>>vp[i].first.second>>vp[i].second;
+    }
+     
+    // sort according to end time 
+    sort(vp.begin(),vp.end(),cmp);
+
+
+    vector<ll> dp(n+1);
+    // dp[i]--> maximum value obtain if we have first i projects in sorted order
+    dp[0]=0;
+    for(int i=1;i<=n;i++)
+    { 
+        // not take the project
+        dp[i]=dp[i-1];
+        int idx=findIdx(vp,vp[i-1].first.first);
+        // take the project and find the next suitable project
+        dp[i]=max(dp[i],vp[i-1].second+dp[idx]);
+    }
+
+    cout<<dp[n]<<endl;
+}
